@@ -1,0 +1,77 @@
+import random
+import openai
+
+def generate_character_concept():
+    # Character trait categories
+    trait_categories = {
+        "appearance": ["tall", "short", "lean", "muscular", "pale", "dark-skinned", "red-haired", "blue-eyed", "scarred"],
+        "personality": ["brave", "compassionate", "clever", "outgoing", "reserved", "stubborn", "optimistic", "cynical"],
+        "background": ["royalty", "street urchin", "noble warrior", "scholar", "thief", "wanderer", "apprentice"],
+        "special_ability": ["fire manipulation", "invisibility", "mind reading", "super strength", "teleportation"]
+    }
+
+    # User inputs for character traits
+    character_traits = {}
+    for category, traits in trait_categories.items():
+        print(f"Choose a {category}: {', '.join(traits)}")
+        selected_trait = input("> ").strip().lower()
+        while selected_trait not in traits:
+            print(f"Invalid input. Choose a {category}: {', '.join(traits)}")
+            selected_trait = input("> ").strip().lower()
+        character_traits[category] = selected_trait
+
+    # Generate the character concept
+    character_name = input("Enter a name for your character: ").strip()
+    character_concept = f"{character_name} is a {character_traits['appearance']} character with a {character_traits['personality']} personality. " \
+                        f"They come from a {character_traits['background']} background and possess the special ability of {character_traits['special_ability']}."
+
+    return character_concept, character_traits,character_name
+
+def generate_short_story(character_concept, character_traits,character_name):
+    # Short story template
+    story_template = f"Once upon a time, there was a great character named {character_name}. " \
+                     f"{character_name} had a {character_traits['appearance']} appearance " \
+                     f"and a {character_traits['personality']} personality. They were known for their {character_traits['special_ability']} ability " \
+                     f"and hailed from a {character_traits['background']} background. "
+
+    # Add some plot elements to the story
+    plot_elements = [
+        f"One day, {character_name} received a mysterious message that led them on an epic quest.",
+        f"The {character_traits['personality']} {character_name} encountered a formidable enemy who tested their {character_traits['special_ability']} ability to its limits.",
+        f"Throughout their journey, {character_name} met a group of companions who became their loyal friends.",
+        f"{character_name} faced difficult decisions that challenged their {character_traits['personality']} nature.",
+        f"After numerous trials, {character_name} emerged victorious, their name forever etched in history for their {character_traits['personality']} nature and {character_traits['special_ability']} ability .",
+    ]
+
+    # Combine the story template and plot elements to create the short story
+    short_story = story_template + " ".join(plot_elements)
+
+    return short_story
+def get_image_description(concept):
+    api_key = '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'
+    openai.api_key = api_key
+    response = openai.Completion.create(
+        engine="text-davinci-002", 
+        prompt=f"Find an image of {concept}.",
+        max_tokens=100
+    )
+    image_description = response.choices[0].text.strip()
+    return image_description
+
+
+if __name__ == "__main__":
+    print("Let's create a character concept!")
+    character_concept, character_traits,character_name = generate_character_concept()
+
+    
+    short_story = generate_short_story(character_concept, character_traits,character_name)
+    image_description = get_image_description(character_concept)
+
+    print("\nCharacter Concept:")
+    print(character_concept)
+
+    print("\nShort Story:")
+    print(short_story)
+    
+    print("\nImage Description:")
+    print(image_description)
